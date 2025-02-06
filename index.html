@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>URL Viewer</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f2f5;
+        }
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        #urlInput {
+            width: 400px;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        #urlInput:focus {
+            outline: none;
+            border-color: #2196F3;
+        }
+        button {
+            padding: 12px 30px;
+            font-size: 16px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            background-color: #1976D2;
+            transform: translateY(-2px);
+        }
+        #urlFrame {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: none;
+            background: white;
+            margin-top: 20px;
+        }
+        .error-message {
+            color: #dc3545;
+            margin-top: 10px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="input-group">
+            <input type="url" id="urlInput" placeholder="Enter website URL (e.g., https://example.com)">
+            <button onclick="loadWebsite()">Show Website</button>
+        </div>
+        <div class="error-message" id="errorMsg">Please enter a valid URL starting with http:// or https://</div>
+        <iframe id="urlFrame" title="Content Viewer"></iframe>
+    </div>
+
+    <script>
+        function loadWebsite() {
+            const urlInput = document.getElementById('urlInput');
+            const frame = document.getElementById('urlFrame');
+            const errorMsg = document.getElementById('errorMsg');
+            
+            // Reset states
+            errorMsg.style.display = 'none';
+            frame.style.display = 'none';
+
+            // Get and validate URL
+            const userUrl = urlInput.value.trim();
+            
+            try {
+                // Basic validation
+                if (!userUrl) {
+                    throw new Error('Please enter a URL');
+                }
+                
+                // Advanced validation using URL constructor
+                new URL(userUrl); // This will throw error for invalid URLs
+                
+                // Show frame and load content
+                frame.src = userUrl;
+                frame.style.display = 'block';
+            } catch (error) {
+                errorMsg.textContent = error.message;
+                errorMsg.style.display = 'block';
+                urlInput.focus();
+            }
+        }
+
+        // Allow Enter key to trigger the button
+        document.getElementById('urlInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                loadWebsite();
+            }
+        });
+    </script>
+</body>
+</html>
